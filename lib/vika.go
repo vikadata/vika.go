@@ -35,7 +35,7 @@ const (
 	FieldKeyId            string        = "id"
 	OrderDesc             string        = "desc"
 	OrderAsc              string        = "asc"
-	DefaultHost           string        = "https://api.vika.cn"
+	DefaultHost           string        = "https://api.lib.cn"
 	DefaultPageSize       int           = 100
 	MaxPageSize           int           = 1000
 	DefaultPageNum        int           = 1

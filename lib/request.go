@@ -205,7 +205,7 @@ func request(header vikaHeader, uri vikaUri, query string, body []byte) ([]byte,
 
 func setHeader(req *fasthttp.Request, header vikaHeader) {
 	// header
-	req.Header.SetUserAgent("vika-go")
+	req.Header.SetUserAgent("lib-go")
 	req.Header.Set(fasthttp.HeaderAuthorization, "Bearer "+header.token)
 	req.Header.SetMethod(header.method)
 	req.Header.SetContentType(header.contentType)

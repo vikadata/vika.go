@@ -25,7 +25,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/vikadata/vika.go"
+	vika "github.com/vikadata/vika.go/lib"
 	"reflect"
 )
 
