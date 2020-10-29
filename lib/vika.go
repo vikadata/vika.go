@@ -35,7 +35,9 @@ const (
 	FieldKeyId            string        = "id"
 	OrderDesc             string        = "desc"
 	OrderAsc              string        = "asc"
-	DefaultHost           string        = "https://api.lib.cn"
+	DefaultHost           string        = "https://vika.cn"
+	CellFormatString      string        = "string"
+	CellFormatJson        string        = "json"
 	DefaultPageSize       int           = 100
 	MaxPageSize           int           = 1000
 	DefaultPageNum        int           = 1

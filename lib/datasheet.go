@@ -86,12 +86,20 @@ func (datasheet Datasheet) Get(params RecordQueryParam) (*PageResponse, error) {
 
 }
 
-func (datasheet Datasheet) Add(records []NewRecord, fieldKey string) (*RecordResponse, error) {
-	return datasheet.request.addRecords(records, fieldKey)
+func (datasheet Datasheet) Add(records []NewRecord, fieldKey ...string) (*RecordResponse, error) {
+	fieldKeyParam := datasheet.fieldKey
+	if fieldKey != nil {
+		fieldKeyParam = fieldKey[0]
+	}
+	return datasheet.request.addRecords(records, fieldKeyParam)
 }
 
-func (datasheet Datasheet) Update(records []Record, fieldKey string) (*RecordResponse, error) {
-	return datasheet.request.updateRecords(records, fieldKey)
+func (datasheet Datasheet) Update(records []Record, fieldKey ...string) (*RecordResponse, error) {
+	fieldKeyParam := datasheet.fieldKey
+	if fieldKey != nil {
+		fieldKeyParam = fieldKey[0]
+	}
+	return datasheet.request.updateRecords(records, fieldKeyParam)
 }
 
 func (datasheet Datasheet) Del(ids []string) (*DeleteResponse, error) {
@@ -102,10 +110,20 @@ func (datasheet Datasheet) Upload(filePath string) (*AttachmentResponse, error) 
 	return datasheet.request.uploadAsset(filePath)
 }
 
-func (datasheet Datasheet) Find(recordIds []string, fieldKey string) (*PageResponse, error) {
-	params := RecordQueryParam{RecordIds: recordIds, FieldKey: fieldKey}
+func (datasheet Datasheet) Find(recordIds []string, fieldKey ...string) (*RecordResponse, error) {
+	fieldKeyParam := datasheet.fieldKey
+	if fieldKey != nil {
+		fieldKeyParam = fieldKey[0]
+	}
+	params := RecordQueryParam{RecordIds: recordIds, FieldKey: fieldKeyParam}
 	if reflect.ValueOf(params.FieldKey).IsZero() {
 		params.FieldKey = datasheet.fieldKey
 	}
-	return datasheet.request.getRecords(RecordQueryParam{RecordIds: recordIds})
+	res, err := datasheet.request.getRecords(RecordQueryParam{RecordIds: recordIds})
+	if err != nil {
+		return nil, err
+	}
+	return &RecordResponse{Success: true, Message: "SUCCESS", Code: 200, Data: Records{
+		res.Data.Records,
+	}}, nil
 }
