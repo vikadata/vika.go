@@ -24,66 +24,117 @@ go get github.com/vikadata/vika.go
 package main
 
 import (
-	"fmt"
-	vika "github.com/vikadata/vika.go/lib"
-	"reflect"
+    "fmt"
+    "github.com/vikadata/vika.go/lib/common"
+    vkerror "github.com/vikadata/vika.go/lib/common/error"
+    "github.com/vikadata/vika.go/lib/common/profile"
+    vika "github.com/vikadata/vika.go/lib/datasheet"
 )
 
 func main() {
-	datasheet := vika.New(vika.VikaConfig{Token: "YOUR_API_TOKEN"}).Datasheet("datasheetId")
-	// 获取全部的数据
-	sort := []vika.Sort{{Field: "field1", Order: "desc"}, {Field: "field2", Order: "asc"}}
-
-	v := reflect.ValueOf(sort)
-	num := v.Len()
-	querySort := make([]interface{}, num)
-	for i := 0; i < num; i++ {
-		querySort[i] = v.Index(i).Interface()
-	}
-	result, err := datasheet.All(vika.RecordQueryParam{FieldKey: vika.FieldKeyName, Sort: querySort})
-	fmt.Printf("Body: %#v\n error: %s", result, err)
-	// 分页获取数据
-	page, pageErr := datasheet.Get(vika.RecordQueryParam{FieldKey: vika.FieldKeyId})
-	fmt.Printf("Body: %#v\n error: %s", page, pageErr)
-	// 上传文件
-	upload, uploadErr := datasheet.Upload("image.png")
-	fmt.Printf("Body: %#v\n error: %s", upload, uploadErr)
-	// 添加记录
-	var addForm = []vika.NewRecord{
-		{
-			Fields: map[string]interface{}{
-				"field1": "value",
-			},
-		},
-		{
-			Fields: map[string]interface{}{
-				"field1": "value",
-			},
-		},
-	}
-	add, addErr := datasheet.Add(addForm, vika.FieldKeyName)
-	fmt.Printf("Body: %#v\n error: %s", add, addErr)
+    credential := common.NewCredential("YOUR_API_TOKEN")
+    cpf := profile.NewClientProfile()
+    datasheet, _ := vika.NewDatasheet(credential, "datasheetId", cpf)
+    // 获取全部的数据
+    request := vika.NewDescribeRecordRequest()
+    request.Sort = []*vika.Sort{
+        {
+            Field: common.StringPtr("number_field"),
+            Order: common.StringPtr("desc"),
+        },
+    }
+    request.Fields = common.StringPtrs([]string{"number_field"})
+    records, err := datasheet.DescribeAllRecords(request)
+    if _, ok := err.(*vkerror.VikaSDKError); ok {
+       fmt.Printf("An API error has returned: %s", err)
+       return
+    }
+    // 非SDK异常，直接失败。实际代码中可以加入其他的处理。
+    if err != nil {
+        panic(err)
+    }
+    // 打印返回的数据
+    fmt.Printf("%#v\n", records)
+    // 分页获取数据
+    page, err := datasheet.DescribeRecords(request)
+	if _, ok := err.(*vkerror.VikaSDKError); ok {
+       fmt.Printf("An API error has returned: %s", err)
+       return
+    }
+    // 非SDK异常，直接失败。实际代码中可以加入其他的处理。
+    if err != nil {
+        panic(err)
+    }
+    // 打印返回的数据
+    fmt.Printf("%#v\n", page)
+    // 添加记录
+    createRequest := vika.NewCreateRecordsRequest()
+    createRequest.Records = []*vika.Fields{
+        {
+            Fields: &vika.Field{
+                "number_field": vika.NumberFieldValue(900),
+            },
+        },
+    }
+    createRecords, err := datasheet.CreateRecords(createRequest)
+    if _, ok := err.(*vkerror.VikaSDKError); ok {
+       fmt.Printf("An API error has returned: %s", err)
+       return
+    }
+    // 非SDK异常，直接失败。实际代码中可以加入其他的处理。
+    if err != nil {
+        panic(err)
+    }
+    // 打印返回的数据
+    fmt.Printf("%#v\n", createRecords)
 	// 修改记录
-	var updateForm = []vika.Record{
-		{
-			Fields: map[string]interface{}{
-				"field1": "value",
-			},
-			RecordId: add.Data.Records[0].RecordId,
-		},
-		{
-			Fields: map[string]interface{}{
-				"field1": "value",
-			},
-			RecordId: add.Data.Records[1].RecordId,
-		},
-	}
-	update, updateErr := datasheet.Update(updateForm, vika.FieldKeyName)
-	fmt.Printf("Body: %#v\n error: %s", update, updateErr)
+    modifyRequest := vika.NewModifyRecordsRequest()
+    modifyRequest.Records = []*vika.BaseRecord{
+        {
+            Fields: &vika.Field{
+                "number_field": vika.NumberFieldValue(1000),
+            },
+            RecordId: common.StringPtr("recordId"),
+        },
+    }
+    modifyRecords, err := datasheet.ModifyRecords(modifyRequest)
+    if _, ok := err.(*vkerror.VikaSDKError); ok {
+       fmt.Printf("An API error has returned: %s", err)
+       return
+    }
+    // 非SDK异常，直接失败。实际代码中可以加入其他的处理。
+    if err != nil {
+        panic(err)
+    }
+    // 打印返回的数据
+    fmt.Printf("%#v\n", modifyRecords)
 	// 删除记录
-	deleteArr := []string{add.Data.Records[0].RecordId, add.Data.Records[1].RecordId}
-	deleteRes, deleteErr := datasheet.Del(deleteArr)
-	fmt.Printf("Body: %#v\n error: %s", deleteRes, deleteErr)
+    deleteRequest := vika.NewDeleteRecordsRequest()
+    request.RecordIds =	common.StringPtrs([]string{"recordId1", "recordId2"})
+    err = datasheet.DeleteRecords(deleteRequest)
+    if _, ok := err.(*vkerror.VikaSDKError); ok {
+       fmt.Printf("An API error has returned: %s", err)
+       return
+    }
+    // 非SDK异常，直接失败。实际代码中可以加入其他的处理。
+    if err != nil {
+        panic(err)
+    }
+    // 上传文件
+    cpf.Upload = true
+    uploadRequest := vika.NewUploadRequest()
+    request.FilePath = "image.png"
+    attachment, err := datasheet.UploadFile(request)
+    if _, ok := err.(*vkerror.VikaSDKError); ok {
+       fmt.Printf("An API error has returned: %s", err)
+       return
+    }
+    // 非SDK异常，直接失败。实际代码中可以加入其他的处理。
+    if err != nil {
+        panic(err)
+    }
+    // 打印返回的数据
+    fmt.Printf("%#v\n", attachment)
 }
 
 ```
