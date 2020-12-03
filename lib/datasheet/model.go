@@ -18,6 +18,15 @@ type (
 	FieldValue       interface{}
 	NumberFieldValue int64
 	TextFieldValue   string
+	UnitFieldValue   struct {
+		UnitName string `json:"unitName,omitempty" name:"unitName"`
+		UnitType string `json:"unitType,omitempty" name:"unitType"`
+		UnitId   string `json:"unitId,omitempty" name:"unitId"`
+	}
+	AttachmentValue struct {
+		Token string `json:"token,omitempty" name:"token"`
+		Name  string `json:"name,omitempty" name:"name"`
+	}
 )
 type (
 	Field map[string]FieldValue
