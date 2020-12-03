@@ -62,7 +62,7 @@ func FileBuffer(filePath string) ([]byte, string, error) {
 	fileWriter, err := createFormFile(bodyWriter, "file", filePath)
 	if err != nil {
 		msg := fmt.Sprintf("Fail to get response because %s", err)
-		return nil, "", vkerror.NewVikaSDKError(500, msg, "ClientError.FileReadError")
+		return nil, "", vkerror.NewVikaSDKError(500, msg, "ClientError.MultipartError")
 	}
 	file, err := os.Open(filePath)
 	if err != nil {
