@@ -2,7 +2,6 @@ package common
 
 import (
 	"io"
-	"log"
 	"net/url"
 	"reflect"
 	"strconv"
@@ -175,7 +174,7 @@ func (r *BaseRequest) Init() *BaseRequest {
 func ConstructParams(req Request) (err error) {
 	value := reflect.ValueOf(req).Elem()
 	err = flatStructure(value, req, "")
-	log.Printf("[DEBUG] params=%s", req.GetParams())
+	//log.Printf("[DEBUG] params=%s", req.GetParams())
 	return
 }
 
