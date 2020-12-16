@@ -61,7 +61,7 @@ type DescribeRecordRequest struct {
 	CellFormat *string `json:"cellFormat,omitempty" name:"cellFormat"`
 
 	// fieldKey 按照【列形式】进行过滤,默认使用列名 ‘name’ 。形如：name。类型：String 必选：否
-	FieldKey *string `json:"fieldKey,omitempty" name:"FieldKey"`
+	FieldKey *string `json:"fieldKey,omitempty" name:"fieldKey"`
 
 	// 参数不支持同时指定`RecordIds`和`Filters`。
 	// sort 按照【排序】进行过滤。 形如：{field: ‘fieldname’, order: ‘asc/desc’}。类型：String 必选：否
