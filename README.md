@@ -1,6 +1,6 @@
 # Vika
 
-[Vika](https://vika.cn) Golang SDK 是对维格表 Fusion API 的官方封装。
+[Vika](https://vika.cn) Golang SDK 是对维格表 API 的封装。
 
 ## 快速开始
 ### 环境要求
