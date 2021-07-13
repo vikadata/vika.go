@@ -1,4 +1,5 @@
-package common
+// Package http provides basic http request/response method and definition
+package http
 
 import (
 	"encoding/json"

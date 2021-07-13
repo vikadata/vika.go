@@ -1,3 +1,4 @@
+// Package error provides custom sdk error
 package error
 
 import "fmt"
