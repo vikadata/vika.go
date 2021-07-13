@@ -32,7 +32,7 @@ type (
 	Field map[string]FieldValue
 )
 
-// 需要排序的字段
+// Sort 需要排序的字段
 type Sort struct {
 
 	// 需要排序的字段名称

@@ -18,7 +18,7 @@ type Datasheet struct {
 	DatasheetId string
 }
 
-// init datasheet instance
+// NewDatasheet init datasheet instance
 func NewDatasheet(credential *common.Credential, datasheetId string, clientProfile *profile.ClientProfile) (datasheet *Datasheet, err error) {
 	datasheet = &Datasheet{}
 	datasheet.DatasheetId = datasheetId
@@ -26,7 +26,7 @@ func NewDatasheet(credential *common.Credential, datasheetId string, clientProfi
 	return
 }
 
-// init datasheet record request instance
+// NewDescribeRecordRequest init datasheet record request instance
 func NewDescribeRecordRequest() (request *DescribeRecordRequest) {
 	request = &DescribeRecordRequest{
 		BaseRequest: &vkhttp.BaseRequest{},
@@ -77,7 +77,7 @@ func NewUploadResponse() (response *UploadResponse) {
 	return
 }
 
-// 本接口 (DescribeAllRecord) 用于查询所有记录的详细信息。
+// DescribeAllRecords 用于查询所有记录的详细信息。
 //
 // * 可以根据视图`ViewId`、列名称或者列ID等信息来查询记录的详细信息。过滤信息详细请见`RecordRequest`。
 // * 如果参数为空，返回当前数表的所有记录。
@@ -113,7 +113,7 @@ func (c *Datasheet) DescribeAllRecords(request *DescribeRecordRequest) (records 
 	return response.Data.Records, nil
 }
 
-// 本接口 (DescribeRecords) 用于查询分页记录的详细信息。
+// DescribeRecords 用于查询分页记录的详细信息。
 //
 // * 可以根据视图`ViewId`、列名称或者列ID等信息来查询记录的详细信息。过滤信息详细请见`RecordRequest`。
 // * 如果参数为空，返回根据默认分页的查询的数据。默认每页100条
@@ -131,8 +131,7 @@ func (c *Datasheet) DescribeRecords(request *DescribeRecordRequest) (pagination 
 	return response.Data, nil
 }
 
-// 本接口 (DescribeRecord) 用于获取单条记录
-//
+// DescribeRecord 用于获取单条记录
 // * 可以根据视图`ViewId`、列名称或者列ID等信息来查询记录的详细信息。过滤信息详细请见`RecordRequest`。
 // * 返回查询到的第一条记录
 func (c *Datasheet) DescribeRecord(request *DescribeRecordRequest) (record *Record, err error) {
@@ -149,7 +148,7 @@ func (c *Datasheet) DescribeRecord(request *DescribeRecordRequest) (record *Reco
 	return response.Data.Records[0], nil
 }
 
-// 本接口 (CreateRecords) 用于创建多条记录
+// CreateRecords 用于创建多条记录
 func (c *Datasheet) CreateRecords(request *CreateRecordsRequest) (records []*Record, err error) {
 	if request == nil {
 		request = NewCreateRecordsRequest()
@@ -164,7 +163,7 @@ func (c *Datasheet) CreateRecords(request *CreateRecordsRequest) (records []*Rec
 	return response.Data.Records, nil
 }
 
-// 本接口 (DeleteRecords) 用于修改多条记录
+// ModifyRecords 用于修改多条记录
 func (c *Datasheet) ModifyRecords(request *ModifyRecordsRequest) (records []*Record, err error) {
 	if request == nil {
 		request = NewModifyRecordsRequest()
@@ -180,7 +179,7 @@ func (c *Datasheet) ModifyRecords(request *ModifyRecordsRequest) (records []*Rec
 	return response.Data.Records, nil
 }
 
-// 本接口 (DeleteRecords) 用于删除多条记录
+// DeleteRecords 用于删除多条记录
 func (c *Datasheet) DeleteRecords(request *DeleteRecordsRequest) (err error) {
 	if request == nil {
 		request = NewDeleteRecordsRequest()
@@ -192,7 +191,7 @@ func (c *Datasheet) DeleteRecords(request *DeleteRecordsRequest) (err error) {
 	return
 }
 
-// 本接口 (UploadFile) 用于上传附件
+// UploadFile 用于上传附件
 func (c *Datasheet) UploadFile(request *UploadRequest) (attachment *Attachment, err error) {
 	if request == nil {
 		request = NewUploadRequest()

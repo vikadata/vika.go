@@ -1,3 +1,4 @@
+// Package common provides basic method and struct definition
 package common
 
 func Int64Ptr(v int64) *int64 {

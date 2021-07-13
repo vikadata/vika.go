@@ -1,3 +1,4 @@
+// Package profile provides client common profiles
 package profile
 
 type ClientProfile struct {
