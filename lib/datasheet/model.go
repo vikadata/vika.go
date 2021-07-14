@@ -32,6 +32,89 @@ type (
 	Field map[string]FieldValue
 )
 
+// FieldProperty describe the field property
+type FieldProperty struct {
+	SingleTextFieldProperty
+	SelectFieldOption
+}
+
+// SingleTextFieldProperty describe the single text field property
+type SingleTextFieldProperty struct {
+	DefaultValue *string `json:"defaultValue,omitempty" name:"defaultValue"`
+}
+
+// SelectFieldProperty describe the single select field and multi select field property
+type SelectFieldProperty struct {
+	Options []*SelectFieldOption `json:"defaultValue,omitempty" name:"defaultValue"`
+}
+
+// NumberFieldProperty describe number field property
+type NumberFieldProperty struct {
+	DefaultValue *string `json:"defaultValue,omitempty" name:"defaultValue"`
+	Precision    *int    `json:"precision,omitempty" name:"precision"`
+}
+
+// CurrencyFieldProperty describe currency field property
+type CurrencyFieldProperty struct {
+	DefaultValue *string `json:"defaultValue,omitempty" name:"defaultValue"`
+	Precision    *int    `json:"precision,omitempty" name:"precision"`
+	Symbol       *string `json:"symbol,omitempty" name:"symbol"`
+}
+
+// SelectFieldOption describe the single select field and multi select field option property
+type SelectFieldOption struct {
+	Id    *string                 `json:"id,omitempty" name:"id"`
+	Name  *string                 `json:"name,omitempty" name:"name"`
+	Color *SelectFieldOptionColor `json:"color,omitempty"`
+}
+
+// SelectFieldOptionColor describe the single select field and multi select field option's color property
+type SelectFieldOptionColor struct {
+	Name  *string `json:"name,omitempty" name:"name"`
+	Value *string `json:"value,omitempty" name:"value"`
+}
+
+type FieldType string
+
+const (
+	FieldType_SingleText       FieldType = "SingleText"
+	FieldType_Text             FieldType = "Text"
+	FieldType_SingleSelect     FieldType = "SingleSelect"
+	FieldType_MultiSelect      FieldType = "MultiSelect"
+	FieldType_Number           FieldType = "Number"
+	FieldType_Currency         FieldType = "Currency"
+	FieldType_Percent          FieldType = "Percent"
+	FieldType_DateTime         FieldType = "DateTime"
+	FieldType_Attachment       FieldType = "Attachment"
+	FieldType_Member           FieldType = "Member"
+	FieldType_Checkbox         FieldType = "Checkbox"
+	FieldType_Rating           FieldType = "Rating"
+	FieldType_URL              FieldType = "URL"
+	FieldType_Phone            FieldType = "Phone"
+	FieldType_MagicLink        FieldType = "MagicLink"
+	FieldType_MagicLookUp      FieldType = "MagicLookUp"
+	FieldType_Formula          FieldType = "Formula"
+	FieldType_AutoNumber       FieldType = "AutoNumber"
+	FieldType_CreatedTime      FieldType = "CreatedTime"
+	FieldType_LastModifiedTime FieldType = "LastModifiedTime"
+	FieldType_CreatedBy        FieldType = "CreatedBy"
+	FieldType_LastModifiedBy   FieldType = "LastModifiedBy"
+)
+
+// DatasheetField describe the fields of table
+type DatasheetField struct {
+	// 字段 ID
+	Id *string `json:"id,omitempty" name:"id"`
+	// 字段名称
+	Name *string `json:"name,omitempty" name:"name"`
+	// 字段类型
+	Type *FieldType `json:"type,omitempty" name:"type"`
+	// 字段权限，即列权限，true 为可编辑，false 为只读
+	Editable *bool `json:"editable,omitempty" name:"editable"`
+	// 字段属性。不同的字段有不同的属性
+	Property *bool `json:"property,omitempty" name:"property"`
+}
+
 // Sort 需要排序的字段
 type Sort struct {
 
@@ -118,6 +201,12 @@ type UploadRequest struct {
 	FilePath string `json:"filePath,omitempty" name:"filePath" string`
 }
 
+type DescribeFieldsRequest struct {
+	*vkhttp.BaseRequest
+	// viewId 按照【视图】进行过滤。形如：viw*****。类型：String 必选：否
+	ViewId *string `json:"viewId,omitempty" name:"viewId"`
+}
+
 type RecordPagination struct {
 	// 当前页数
 	PageNum *int64 `json:"pageNum,omitempty" name:"pageNum"`
@@ -158,4 +247,14 @@ type UploadResponse struct {
 	*vkhttp.BaseResponse
 	// api返回数据
 	Data *Attachment `json:"Data"`
+}
+
+type FieldsResponse struct {
+	Fields []*DatasheetField `json:"fields"`
+}
+
+type DescribeFieldsResponse struct {
+	*vkhttp.BaseResponse
+	// api返回数据
+	Data *FieldsResponse `json:"Data"`
 }
