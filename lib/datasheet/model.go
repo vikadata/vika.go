@@ -28,24 +28,19 @@ type (
 		Name  string `json:"name,omitempty" name:"name"`
 	}
 )
+
 type (
 	Field map[string]FieldValue
 )
 
-// FieldProperty describe the field property
-type FieldProperty struct {
-	SingleTextFieldProperty
-	SelectFieldOption
-}
-
 // SingleTextFieldProperty describe the single text field property
 type SingleTextFieldProperty struct {
-	DefaultValue *string `json:"defaultValue,omitempty" name:"defaultValue"`
+	DefaultValue string `json:"defaultValue,omitempty" name:"defaultValue"`
 }
 
 // SelectFieldProperty describe the single select field and multi select field property
 type SelectFieldProperty struct {
-	Options []*SelectFieldOption `json:"defaultValue,omitempty" name:"defaultValue"`
+	Options []*SelectFieldOption `json:"options,omitempty" name:"options"`
 }
 
 // NumberFieldProperty describe number field property
@@ -61,11 +56,88 @@ type CurrencyFieldProperty struct {
 	Symbol       *string `json:"symbol,omitempty" name:"symbol"`
 }
 
+// PercentFieldProperty describe percent field property
+type PercentFieldProperty struct {
+	DefaultValue *string `json:"defaultValue,omitempty" name:"defaultValue"`
+	Precision    *int    `json:"precision,omitempty" name:"precision"`
+}
+
+// DateTimeFieldProperty describe date time field property
+type DateTimeFieldProperty struct {
+	Format      *string `json:"format,omitempty" name:"format"`
+	IncludeTime *bool   `json:"includeTime,omitempty" name:"includeTime"`
+	AutoFill    *bool   `json:"autoFill,omitempty" name:"autoFill"`
+}
+
+// MemberFieldProperty describe member field property
+type MemberFieldProperty struct {
+	Options       []*MemberFieldOption `json:"options,omitempty" name:"options"`
+	IsMulti       *bool                `json:"isMulti,omitempty" name:"isMulti"`
+	ShouldSendMsg *bool                `json:"shouldSendMsg,omitempty" name:"shouldSendMsg"`
+}
+
+// CheckboxFieldProperty describe checkbox field property
+type CheckboxFieldProperty struct {
+	Icon *string `json:"icon,omitempty" name:"icon"`
+}
+
+// RatingFieldProperty describe rating field property
+type RatingFieldProperty struct {
+	Icon *string `json:"icon,omitempty" name:"icon"`
+	Max  *int    `json:"max,omitempty" name:"max"`
+}
+
+// MagicLinkFieldProperty describe magic link field property
+type MagicLinkFieldProperty struct {
+	ForeignDatasheetId *string `json:"foreignDatasheetId,omitempty" name:"foreignDatasheetId"`
+	BrotherFieldId     *string `json:"brotherFieldId,omitempty" name:"brotherFieldId"`
+	LimitToViewId      *string `json:"limitToViewId,omitempty" name:"limitToViewId"`
+	LimitSingleRecord  *bool   `json:"limitSingleRecord,omitempty" name:"limitSingleRecord"`
+}
+
+// MagicLookUpFieldProperty describe magic lookup field property
+type MagicLookUpFieldProperty struct {
+	RelatedLinkFieldId *string            `json:"relatedLinkFieldId,omitempty" name:"relatedLinkFieldId"`
+	TargetFieldId      *string            `json:"targetFieldId,omitempty" name:"targetFieldId"`
+	RollupFunction     *RollupFunction    `json:"rollupFunction,omitempty" name:"rollupFunction"`
+	ValueType          *ValueType         `json:"valueType,omitempty" name:"valueType"`
+	EntityField        *LookUpFieldEntity `json:"entityField,omitempty" name:"entityField"`
+	Format             *FieldFormat       `json:"format,omitempty" name:"format"`
+}
+
+// FormulaFieldProperty describe formula field property
+type FormulaFieldProperty struct {
+	Expression *string      `json:"expression,omitempty" name:"expression"`
+	ValueType  *ValueType   `json:"valueType,omitempty" name:"valueType"`
+	HasError   *bool        `json:"hasError,omitempty" name:"hasError"`
+	Format     *FieldFormat `json:"format,omitempty" name:"format"`
+}
+
+// UserFieldProperty describe createdBy,lastModifiedBy field property
+type UserFieldProperty struct {
+	Options []*UserInfo `json:"options,omitempty" name:"options"`
+}
+
 // SelectFieldOption describe the single select field and multi select field option property
 type SelectFieldOption struct {
 	Id    *string                 `json:"id,omitempty" name:"id"`
 	Name  *string                 `json:"name,omitempty" name:"name"`
 	Color *SelectFieldOptionColor `json:"color,omitempty"`
+}
+
+// MemberFieldOption describe the member field option property
+type MemberFieldOption struct {
+	Id     *string     `json:"id,omitempty" name:"id"`
+	Name   *string     `json:"name,omitempty" name:"name"`
+	Type   *MemberType `json:"type,omitempty" name:"type"`
+	Avatar *string     `json:"avatar,omitempty" name:"avatar"`
+}
+
+// UserInfo describe the user base info
+type UserInfo struct {
+	Id     *string `json:"id,omitempty" name:"id"`
+	Name   *string `json:"name,omitempty" name:"name"`
+	Avatar *string `json:"avatar,omitempty" name:"avatar"`
 }
 
 // SelectFieldOptionColor describe the single select field and multi select field option's color property
@@ -74,46 +146,83 @@ type SelectFieldOptionColor struct {
 	Value *string `json:"value,omitempty" name:"value"`
 }
 
-type FieldType string
+type LookUpFieldEntity struct {
+	DatasheetId *string         `json:"datasheetId,omitempty" name:"datasheetId"`
+	Field       *DatasheetField `json:"field,omitempty" name:"field"`
+}
 
+type LookUpFieldFormat struct {
+	Type   *string         `json:"type,omitempty" name:"type"`
+	Format *DatasheetField `json:"field,omitempty" name:"field"`
+}
+
+// FieldFormat the format of the field set for the record value to show
+type FieldFormat struct {
+	DateTimeFieldFormat
+	NumberFieldFormat
+	CurrencyFieldFormat
+}
+
+// DateTimeFieldFormat the format for make the value just like the datetime filed shows
+type DateTimeFieldFormat struct {
+	DateFormat  *string `json:"dateFormat,omitempty" name:"dateFormat"`
+	TimeFormat  *string `json:"timeFormat,omitempty" name:"timeFormat"`
+	IncludeTime *bool   `json:"includeTime,omitempty" name:"includeTime"`
+}
+
+// NumberFieldFormat the format for make the value just like the number filed shows
+type NumberFieldFormat struct {
+	Precision *int `json:"precision,omitempty" name:"precision"`
+}
+
+// CurrencyFieldFormat the format for make the value just like the currency filed shows
+type CurrencyFieldFormat struct {
+	Precision *int `json:"precision,omitempty" name:"precision"`
+	Symbol    *int `json:"symbol,omitempty" name:"symbol"`
+}
+
+// MemberType the vika datasheet member field type
+type MemberType string
+
+// ValueType the vika datasheet basic value type
+type ValueType string
+
+// RollupFunction the vika datasheet supported customize function
+type RollupFunction string
+
+// all datasheet member field types
 const (
-	FieldType_SingleText       FieldType = "SingleText"
-	FieldType_Text             FieldType = "Text"
-	FieldType_SingleSelect     FieldType = "SingleSelect"
-	FieldType_MultiSelect      FieldType = "MultiSelect"
-	FieldType_Number           FieldType = "Number"
-	FieldType_Currency         FieldType = "Currency"
-	FieldType_Percent          FieldType = "Percent"
-	FieldType_DateTime         FieldType = "DateTime"
-	FieldType_Attachment       FieldType = "Attachment"
-	FieldType_Member           FieldType = "Member"
-	FieldType_Checkbox         FieldType = "Checkbox"
-	FieldType_Rating           FieldType = "Rating"
-	FieldType_URL              FieldType = "URL"
-	FieldType_Phone            FieldType = "Phone"
-	FieldType_MagicLink        FieldType = "MagicLink"
-	FieldType_MagicLookUp      FieldType = "MagicLookUp"
-	FieldType_Formula          FieldType = "Formula"
-	FieldType_AutoNumber       FieldType = "AutoNumber"
-	FieldType_CreatedTime      FieldType = "CreatedTime"
-	FieldType_LastModifiedTime FieldType = "LastModifiedTime"
-	FieldType_CreatedBy        FieldType = "CreatedBy"
-	FieldType_LastModifiedBy   FieldType = "LastModifiedBy"
+	MemberType_Member MemberType = "Member"
+	MemberType_Team   MemberType = "Team"
 )
 
-// DatasheetField describe the fields of table
-type DatasheetField struct {
-	// 字段 ID
-	Id *string `json:"id,omitempty" name:"id"`
-	// 字段名称
-	Name *string `json:"name,omitempty" name:"name"`
-	// 字段类型
-	Type *FieldType `json:"type,omitempty" name:"type"`
-	// 字段权限，即列权限，true 为可编辑，false 为只读
-	Editable *bool `json:"editable,omitempty" name:"editable"`
-	// 字段属性。不同的字段有不同的属性
-	Property *bool `json:"property,omitempty" name:"property"`
-}
+// datasheet supported basic value type
+const (
+	ValueType_String   ValueType = "String"
+	ValueType_Boolean  ValueType = "Boolean"
+	ValueType_Number   ValueType = "Number"
+	ValueType_DateTime ValueType = "DateTime"
+	ValueType_Array    ValueType = "Array"
+)
+
+// datasheet supported all rollup functions
+const (
+	RollupFunction_VALUES       RollupFunction = "VALUES"
+	RollupFunction_AVERAGE      RollupFunction = "AVERAGE"
+	RollupFunction_COUNT        RollupFunction = "COUNT"
+	RollupFunction_COUNTA       RollupFunction = "COUNTA"
+	RollupFunction_COUNTALL     RollupFunction = "COUNTALL"
+	RollupFunction_SUM          RollupFunction = "SUM"
+	RollupFunction_MIN          RollupFunction = "MIN"
+	RollupFunction_MAX          RollupFunction = "MAX"
+	RollupFunction_AND          RollupFunction = "AND"
+	RollupFunction_OR           RollupFunction = "OR"
+	RollupFunction_XOR          RollupFunction = "XOR"
+	RollupFunction_CONCATENATE  RollupFunction = "CONCATENATE"
+	RollupFunction_ARRAYJOIN    RollupFunction = "ARRAYJOIN"
+	RollupFunction_ARRAYUNIQUE  RollupFunction = "ARRAYUNIQUE"
+	RollupFunction_ARRAYCOMPACT RollupFunction = "ARRAYCOMPACT"
+)
 
 // Sort 需要排序的字段
 type Sort struct {
@@ -240,13 +349,13 @@ type Attachment struct {
 type DescribeRecordResponse struct {
 	*vkhttp.BaseResponse
 	// api返回数据
-	Data *RecordPagination `json:"Data"`
+	Data *RecordPagination `json:"data"`
 }
 
 type UploadResponse struct {
 	*vkhttp.BaseResponse
 	// api返回数据
-	Data *Attachment `json:"Data"`
+	Data *Attachment `json:"data"`
 }
 
 type FieldsResponse struct {
@@ -256,5 +365,5 @@ type FieldsResponse struct {
 type DescribeFieldsResponse struct {
 	*vkhttp.BaseResponse
 	// api返回数据
-	Data *FieldsResponse `json:"Data"`
+	Data *FieldsResponse `json:"data"`
 }

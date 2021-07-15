@@ -5,6 +5,7 @@ import (
 	"github.com/vikadata/vika.go/lib/common"
 	vkerror "github.com/vikadata/vika.go/lib/common/error"
 	"github.com/vikadata/vika.go/lib/common/profile"
+	"github.com/vikadata/vika.go/lib/common/util"
 	vika "github.com/vikadata/vika.go/lib/datasheet"
 	"os"
 	"testing"
@@ -155,4 +156,28 @@ func TestUpload(t *testing.T) {
 		panic(err)
 	}
 	t.Log(attachment)
+}
+
+func TestDescribeFields(t *testing.T) {
+	// VIKA_HOST 可以不用设置，默认使用生产的host
+	credential := common.NewCredential(os.Getenv("VIKA_TOKEN"))
+	cpf := profile.NewClientProfile()
+	cpf.HttpProfile.Domain = os.Getenv("VIKA_HOST")
+	datasheet, _ := vika.NewDatasheet(credential, os.Getenv("VIKA_DATASHEET_ID"), cpf)
+	describeRequest := vika.NewDescribeFieldsRequest()
+	describeRequest.ViewId = common.StringPtr(os.Getenv("VIKA_DATASHEET_VIEW_ID"))
+	fields, err := datasheet.DescribeFields(describeRequest)
+	if _, ok := err.(*vkerror.VikaSDKError); ok {
+		t.Errorf("An API error has returned: %s", err)
+	}
+	// 非SDK异常，直接失败。实际代码中可以加入其他的处理。
+	if err != nil {
+		t.Errorf("An unexcepted error has returned: %s", err)
+		panic(err)
+	}
+	for _, value := range fields {
+		property := value.SelectFieldProperty()
+		util.Dd(property)
+	}
+	t.Log(len(fields))
 }
