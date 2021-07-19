@@ -316,6 +316,10 @@ type DescribeFieldsRequest struct {
 	ViewId *string `json:"viewId,omitempty" name:"viewId"`
 }
 
+type DescribeViewsRequest struct {
+	*vkhttp.BaseRequest
+}
+
 type RecordPagination struct {
 	// 当前页数
 	PageNum *int64 `json:"pageNum,omitempty" name:"pageNum"`
@@ -362,8 +366,18 @@ type FieldsResponse struct {
 	Fields []*DatasheetField `json:"fields"`
 }
 
+type ViewsResponse struct {
+	Views []*DatasheetView `json:"views"`
+}
+
 type DescribeFieldsResponse struct {
 	*vkhttp.BaseResponse
 	// api返回数据
 	Data *FieldsResponse `json:"data"`
+}
+
+type DescribeViewsResponse struct {
+	*vkhttp.BaseResponse
+	// api返回数据
+	Data *ViewsResponse `json:"data"`
 }

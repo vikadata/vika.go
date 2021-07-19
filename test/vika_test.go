@@ -181,3 +181,23 @@ func TestDescribeFields(t *testing.T) {
 	}
 	t.Log(len(fields))
 }
+
+func TestDescribeViews(t *testing.T) {
+	// VIKA_HOST 可以不用设置，默认使用生产的host
+	credential := common.NewCredential(os.Getenv("VIKA_TOKEN"))
+	cpf := profile.NewClientProfile()
+	cpf.HttpProfile.Domain = os.Getenv("VIKA_HOST")
+	datasheet, _ := vika.NewDatasheet(credential, os.Getenv("VIKA_DATASHEET_ID"), cpf)
+	describeRequest := vika.NewDescribeViewsRequest()
+	views, err := datasheet.DescribeViews(describeRequest)
+	if _, ok := err.(*vkerror.VikaSDKError); ok {
+		t.Errorf("An API error has returned: %s", err)
+	}
+	// 非SDK异常，直接失败。实际代码中可以加入其他的处理。
+	if err != nil {
+		t.Errorf("An unexcepted error has returned: %s", err)
+		panic(err)
+	}
+	util.Dd(views)
+	t.Log(len(views))
+}
