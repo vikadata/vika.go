@@ -208,7 +208,7 @@ func TestDescribeSpaces(t *testing.T) {
 	credential := common.NewCredential(os.Getenv("VIKA_TOKEN"))
 	cpf := profile.NewClientProfile()
 	cpf.HttpProfile.Domain = os.Getenv("VIKA_HOST")
-	spaceClient, _ := space.NewSpace(credential, os.Getenv("VIKA_DATASHEET_ID"), cpf)
+	spaceClient, _ := space.NewSpace(credential, "", cpf)
 	describeRequest := space.NewDescribeSpacesRequest()
 	spaces, err := spaceClient.DescribeSpaces(describeRequest)
 	if _, ok := err.(*vkerror.VikaSDKError); ok {
@@ -221,4 +221,45 @@ func TestDescribeSpaces(t *testing.T) {
 	}
 	util.Dd(spaces)
 	t.Log(len(spaces))
+}
+
+func TestDescribeNodes(t *testing.T) {
+	// VIKA_HOST 可以不用设置，默认使用生产的host
+	credential := common.NewCredential(os.Getenv("VIKA_TOKEN"))
+	cpf := profile.NewClientProfile()
+	cpf.HttpProfile.Domain = os.Getenv("VIKA_HOST")
+	spaceClient, _ := space.NewSpace(credential, os.Getenv("VIKA_SPACE_ID"), cpf)
+	describeRequest := space.NewDescribeNodesRequest()
+	nodes, err := spaceClient.DescribeNodes(describeRequest)
+	if _, ok := err.(*vkerror.VikaSDKError); ok {
+		t.Errorf("An API error has returned: %s", err)
+	}
+	// 非SDK异常，直接失败。实际代码中可以加入其他的处理。
+	if err != nil {
+		t.Errorf("An unexcepted error has returned: %s", err)
+		panic(err)
+	}
+	util.Dd(nodes)
+	t.Log(len(nodes))
+}
+
+func TestDescribeNode(t *testing.T) {
+	// VIKA_HOST 可以不用设置，默认使用生产的host
+	credential := common.NewCredential(os.Getenv("VIKA_TOKEN"))
+	cpf := profile.NewClientProfile()
+	cpf.HttpProfile.Domain = os.Getenv("VIKA_HOST")
+	spaceClient, _ := space.NewSpace(credential, os.Getenv("VIKA_SPACE_ID"), cpf)
+	describeRequest := space.NewDescribeNodeRequest()
+	describeRequest.NodeId = common.StringPtr(os.Getenv("VIKA_DATASHEET_ID"))
+	node, err := spaceClient.DescribeNode(describeRequest)
+	if _, ok := err.(*vkerror.VikaSDKError); ok {
+		t.Errorf("An API error has returned: %s", err)
+	}
+	// 非SDK异常，直接失败。实际代码中可以加入其他的处理。
+	if err != nil {
+		t.Errorf("An unexcepted error has returned: %s", err)
+		panic(err)
+	}
+	util.Dd(node)
+	t.Log(node)
 }
