@@ -4,7 +4,7 @@ import (
 	vkhttp "github.com/vikadata/vika.go/lib/common/http"
 )
 
-const spacePath = "/fusion/v1/spaces"
+const spaceListPath = "/fusion/v1/spaces"
 
 // NewDescribeSpacesRequest init get spaces request instance
 func NewDescribeSpacesRequest() (request *DescribeSpacesRequest) {
@@ -25,7 +25,7 @@ func (c *Space) DescribeSpaces(request *DescribeSpacesRequest) (views []*SpaceBa
 	if request == nil {
 		request = NewDescribeSpacesRequest()
 	}
-	request.Init().SetPath(spacePath)
+	request.Init().SetPath(spaceListPath)
 	request.SetHttpMethod(vkhttp.GET)
 	response := newDescribeSpacesResponse()
 	err = c.Send(request, response)
