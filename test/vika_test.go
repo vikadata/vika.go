@@ -21,7 +21,7 @@ func TestCreateRecords(t *testing.T) {
 	request.Records = []*vika.Fields{
 		{
 			Fields: &vika.Field{
-				os.Getenv("FIELD"): vika.NumberFieldValue(900),
+				os.Getenv("NUMBER_FIELD_NAME"): vika.NumberFieldValue(900),
 			},
 		},
 	}
@@ -45,11 +45,11 @@ func TestDescribeAllRecords(t *testing.T) {
 	request := vika.NewDescribeRecordRequest()
 	request.Sort = []*vika.Sort{
 		{
-			Field: common.StringPtr(os.Getenv("FIELD")),
+			Field: common.StringPtr(os.Getenv("NUMBER_FIELD_NAME")),
 			Order: common.StringPtr("desc"),
 		},
 	}
-	request.Fields = common.StringPtrs([]string{os.Getenv("FIELD")})
+	request.Fields = common.StringPtrs([]string{os.Getenv("NUMBER_FIELD_NAME")})
 	records, err := datasheet.DescribeAllRecords(request)
 	if _, ok := err.(*vkerror.VikaSDKError); ok {
 		t.Errorf("An API error has returned: %s", err)
@@ -70,11 +70,11 @@ func TestDescribeRecords(t *testing.T) {
 	request := vika.NewDescribeRecordRequest()
 	request.Sort = []*vika.Sort{
 		{
-			Field: common.StringPtr(os.Getenv("FIELD")),
+			Field: common.StringPtr(os.Getenv("NUMBER_FIELD_NAME")),
 			Order: common.StringPtr("desc"),
 		},
 	}
-	request.Fields = common.StringPtrs([]string{os.Getenv("FIELD")})
+	request.Fields = common.StringPtrs([]string{os.Getenv("NUMBER_FIELD_NAME")})
 	records, err := datasheet.DescribeRecords(request)
 	if _, ok := err.(*vkerror.VikaSDKError); ok {
 		t.Errorf("An API error has returned: %s", err)
@@ -93,13 +93,13 @@ func TestModifyRecords(t *testing.T) {
 	cpf := profile.NewClientProfile()
 	datasheet, _ := vika.NewDatasheet(credential, os.Getenv("DATASHEET_ID"), cpf)
 	describeRequest := vika.NewDescribeRecordRequest()
-	describeRequest.FilterByFormula = common.StringPtr("{" + os.Getenv("FIELD") + "}=900")
+	describeRequest.FilterByFormula = common.StringPtr("{" + os.Getenv("NUMBER_FIELD_NAME") + "}=900")
 	record, _ := datasheet.DescribeRecord(describeRequest)
 	request := vika.NewModifyRecordsRequest()
 	request.Records = []*vika.BaseRecord{
 		{
 			Fields: &vika.Field{
-				os.Getenv("FIELD"): vika.NumberFieldValue(1000),
+				os.Getenv("NUMBER_FIELD_NAME"): vika.NumberFieldValue(1000),
 			},
 			RecordId: record.RecordId,
 		},
@@ -122,7 +122,7 @@ func TestDeleteRecords(t *testing.T) {
 	cpf := profile.NewClientProfile()
 	datasheet, _ := vika.NewDatasheet(credential, os.Getenv("DATASHEET_ID"), cpf)
 	describeRequest := vika.NewDescribeRecordRequest()
-	describeRequest.FilterByFormula = common.StringPtr("{" + os.Getenv("FIELD") + "}=1000")
+	describeRequest.FilterByFormula = common.StringPtr("{" + os.Getenv("NUMBER_FIELD_NAME") + "}=1000")
 	record, _ := datasheet.DescribeRecord(describeRequest)
 	request := vika.NewDeleteRecordsRequest()
 	request.RecordIds = []*string{record.RecordId}
@@ -166,7 +166,7 @@ func TestDescribeFields(t *testing.T) {
 	cpf.HttpProfile.Domain = os.Getenv("HOST")
 	datasheet, _ := vika.NewDatasheet(credential, os.Getenv("DATASHEET_ID"), cpf)
 	describeRequest := vika.NewDescribeFieldsRequest()
-	describeRequest.ViewId = common.StringPtr(os.Getenv("DATASHEET_VIEW_ID"))
+	describeRequest.ViewId = common.StringPtr(os.Getenv("VIEW_ID"))
 	fields, err := datasheet.DescribeFields(describeRequest)
 	if _, ok := err.(*vkerror.VikaSDKError); ok {
 		t.Errorf("An API error has returned: %s", err)
