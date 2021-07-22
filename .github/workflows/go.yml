@@ -4,8 +4,9 @@ on: [push, pull_request]
 
 jobs:
 
-  build:
+  unit test:
     runs-on: ubuntu-latest
+    environment: vika
     steps:
     - uses: actions/checkout@v2
 
