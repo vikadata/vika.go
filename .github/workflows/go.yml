@@ -4,7 +4,7 @@ on: [push, pull_request]
 
 jobs:
 
-  unit test:
+  unit_test:
     runs-on: ubuntu-latest
     environment: vika
     steps:
@@ -17,6 +17,7 @@ jobs:
 
     - name: Build
       run: go build -v ./...
-
+    - name: Check
+      run: echo "hello ${HOST}"
     - name: Test
       run: TOKEN=$TOKEN HOST=$HOST SPACE_ID=$SPACE_ID DATASHEET_ID=$DATASHEET_ID VIEW_ID=$VIEW_ID NUMBER_FIELD_NAME=$NUMBER_FIELD_NAME go test -v ./test/...
