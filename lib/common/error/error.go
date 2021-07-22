@@ -10,7 +10,7 @@ type VikaSDKError struct {
 }
 
 func (e *VikaSDKError) Error() string {
-	return fmt.Sprintf("[VikaSDKError] Code=%s, Message=%s, RequestId=%s", e.Code, e.Message, e.RequestId)
+	return fmt.Sprintf("[VikaSDKError] Code=%d, Message=%s, RequestId=%s", e.Code, e.Message, e.RequestId)
 }
 
 func NewVikaSDKError(code int, message, requestId string) error {
