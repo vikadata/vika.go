@@ -17,6 +17,7 @@ func TestCreateRecords(t *testing.T) {
 	credential := common.NewCredential(os.Getenv("TOKEN"))
 	cpf := profile.NewClientProfile()
 	datasheet, _ := vika.NewDatasheet(credential, os.Getenv("DATASHEET_ID"), cpf)
+	t.Log("DATASHEET_ID", os.Getenv("DATASHEET_ID"))
 	request := vika.NewCreateRecordsRequest()
 	request.Records = []*vika.Fields{
 		{

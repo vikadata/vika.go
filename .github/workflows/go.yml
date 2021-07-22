@@ -17,7 +17,13 @@ jobs:
 
     - name: Build
       run: go build -v ./...
-    - name: Check
-      run: echo "hello ${HOST}"
+
     - name: Test
-      run: TOKEN=$TOKEN HOST=$HOST SPACE_ID=$SPACE_ID DATASHEET_ID=$DATASHEET_ID VIEW_ID=$VIEW_ID NUMBER_FIELD_NAME=$NUMBER_FIELD_NAME go test -v ./test/...
+      env:
+        HOST: ${{ secrets.HOST }}
+        TOKEN: ${{ secrets.TOKEN }}
+        SPACE_ID: ${{ secrets.SPACE_ID }}
+        DATASHEET_ID: ${{ secrets.DATASHEET_ID }}
+        VIEW_ID: ${{ secrets.VIEW_ID }}
+        NUMBER_FIELD_NAME: ${{ secrets.NUMBER_FIELD_NAME }}
+      run: go test -v ./test/...
