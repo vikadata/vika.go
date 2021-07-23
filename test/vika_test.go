@@ -14,14 +14,15 @@ import (
 
 func TestCreateRecords(t *testing.T) {
 	// VIKA_HOST 可以不用设置，默认使用生产的host
-	credential := common.NewCredential(os.Getenv("VIKA_TOKEN"))
+	credential := common.NewCredential(os.Getenv("TOKEN"))
 	cpf := profile.NewClientProfile()
-	datasheet, _ := vika.NewDatasheet(credential, os.Getenv("VIKA_DATASHEET_ID"), cpf)
+	datasheet, _ := vika.NewDatasheet(credential, os.Getenv("DATASHEET_ID"), cpf)
+	t.Log("DATASHEET_ID", os.Getenv("DATASHEET_ID"))
 	request := vika.NewCreateRecordsRequest()
 	request.Records = []*vika.Fields{
 		{
 			Fields: &vika.Field{
-				os.Getenv("VIKA_FIELD"): vika.NumberFieldValue(900),
+				os.Getenv("NUMBER_FIELD_NAME"): vika.NumberFieldValue(900),
 			},
 		},
 	}
@@ -38,18 +39,18 @@ func TestCreateRecords(t *testing.T) {
 }
 
 func TestDescribeAllRecords(t *testing.T) {
-	// VIKA_HOST 可以不用设置，默认使用生产的host
-	credential := common.NewCredential(os.Getenv("VIKA_TOKEN"))
+	// HOST 可以不用设置，默认使用生产的host
+	credential := common.NewCredential(os.Getenv("TOKEN"))
 	cpf := profile.NewClientProfile()
-	datasheet, _ := vika.NewDatasheet(credential, os.Getenv("VIKA_DATASHEET_ID"), cpf)
+	datasheet, _ := vika.NewDatasheet(credential, os.Getenv("DATASHEET_ID"), cpf)
 	request := vika.NewDescribeRecordRequest()
 	request.Sort = []*vika.Sort{
 		{
-			Field: common.StringPtr(os.Getenv("VIKA_FIELD")),
+			Field: common.StringPtr(os.Getenv("NUMBER_FIELD_NAME")),
 			Order: common.StringPtr("desc"),
 		},
 	}
-	request.Fields = common.StringPtrs([]string{os.Getenv("VIKA_FIELD")})
+	request.Fields = common.StringPtrs([]string{os.Getenv("NUMBER_FIELD_NAME")})
 	records, err := datasheet.DescribeAllRecords(request)
 	if _, ok := err.(*vkerror.VikaSDKError); ok {
 		t.Errorf("An API error has returned: %s", err)
@@ -63,18 +64,18 @@ func TestDescribeAllRecords(t *testing.T) {
 }
 
 func TestDescribeRecords(t *testing.T) {
-	// VIKA_HOST 可以不用设置，默认使用生产的host
-	credential := common.NewCredential(os.Getenv("VIKA_TOKEN"))
+	// HOST 可以不用设置，默认使用生产的host
+	credential := common.NewCredential(os.Getenv("TOKEN"))
 	cpf := profile.NewClientProfile()
-	datasheet, _ := vika.NewDatasheet(credential, os.Getenv("VIKA_DATASHEET_ID"), cpf)
+	datasheet, _ := vika.NewDatasheet(credential, os.Getenv("DATASHEET_ID"), cpf)
 	request := vika.NewDescribeRecordRequest()
 	request.Sort = []*vika.Sort{
 		{
-			Field: common.StringPtr(os.Getenv("VIKA_FIELD")),
+			Field: common.StringPtr(os.Getenv("NUMBER_FIELD_NAME")),
 			Order: common.StringPtr("desc"),
 		},
 	}
-	request.Fields = common.StringPtrs([]string{os.Getenv("VIKA_FIELD")})
+	request.Fields = common.StringPtrs([]string{os.Getenv("NUMBER_FIELD_NAME")})
 	records, err := datasheet.DescribeRecords(request)
 	if _, ok := err.(*vkerror.VikaSDKError); ok {
 		t.Errorf("An API error has returned: %s", err)
@@ -88,18 +89,18 @@ func TestDescribeRecords(t *testing.T) {
 }
 
 func TestModifyRecords(t *testing.T) {
-	// VIKA_HOST 可以不用设置，默认使用生产的host
-	credential := common.NewCredential(os.Getenv("VIKA_TOKEN"))
+	// HOST 可以不用设置，默认使用生产的host
+	credential := common.NewCredential(os.Getenv("TOKEN"))
 	cpf := profile.NewClientProfile()
-	datasheet, _ := vika.NewDatasheet(credential, os.Getenv("VIKA_DATASHEET_ID"), cpf)
+	datasheet, _ := vika.NewDatasheet(credential, os.Getenv("DATASHEET_ID"), cpf)
 	describeRequest := vika.NewDescribeRecordRequest()
-	describeRequest.FilterByFormula = common.StringPtr("{" + os.Getenv("VIKA_FIELD") + "}=900")
+	describeRequest.FilterByFormula = common.StringPtr("{" + os.Getenv("NUMBER_FIELD_NAME") + "}=900")
 	record, _ := datasheet.DescribeRecord(describeRequest)
 	request := vika.NewModifyRecordsRequest()
 	request.Records = []*vika.BaseRecord{
 		{
 			Fields: &vika.Field{
-				os.Getenv("VIKA_FIELD"): vika.NumberFieldValue(1000),
+				os.Getenv("NUMBER_FIELD_NAME"): vika.NumberFieldValue(1000),
 			},
 			RecordId: record.RecordId,
 		},
@@ -117,12 +118,12 @@ func TestModifyRecords(t *testing.T) {
 }
 
 func TestDeleteRecords(t *testing.T) {
-	// VIKA_HOST 可以不用设置，默认使用生产的host
-	credential := common.NewCredential(os.Getenv("VIKA_TOKEN"))
+	// HOST 可以不用设置，默认使用生产的host
+	credential := common.NewCredential(os.Getenv("TOKEN"))
 	cpf := profile.NewClientProfile()
-	datasheet, _ := vika.NewDatasheet(credential, os.Getenv("VIKA_DATASHEET_ID"), cpf)
+	datasheet, _ := vika.NewDatasheet(credential, os.Getenv("DATASHEET_ID"), cpf)
 	describeRequest := vika.NewDescribeRecordRequest()
-	describeRequest.FilterByFormula = common.StringPtr("{" + os.Getenv("VIKA_FIELD") + "}=1000")
+	describeRequest.FilterByFormula = common.StringPtr("{" + os.Getenv("NUMBER_FIELD_NAME") + "}=1000")
 	record, _ := datasheet.DescribeRecord(describeRequest)
 	request := vika.NewDeleteRecordsRequest()
 	request.RecordIds = []*string{record.RecordId}
@@ -139,11 +140,11 @@ func TestDeleteRecords(t *testing.T) {
 }
 
 func TestUpload(t *testing.T) {
-	// VIKA_HOST 可以不用设置，默认使用生产的host
-	credential := common.NewCredential(os.Getenv("VIKA_TOKEN"))
+	// HOST 可以不用设置，默认使用生产的host
+	credential := common.NewCredential(os.Getenv("TOKEN"))
 	cpf := profile.NewClientProfile()
 	cpf.Upload = true
-	datasheet, _ := vika.NewDatasheet(credential, os.Getenv("VIKA_DATASHEET_ID"), cpf)
+	datasheet, _ := vika.NewDatasheet(credential, os.Getenv("DATASHEET_ID"), cpf)
 	request := vika.NewUploadRequest()
 	request.FilePath = "image.png"
 	attachment, err := datasheet.UploadFile(request)
@@ -160,13 +161,13 @@ func TestUpload(t *testing.T) {
 }
 
 func TestDescribeFields(t *testing.T) {
-	// VIKA_HOST 可以不用设置，默认使用生产的host
-	credential := common.NewCredential(os.Getenv("VIKA_TOKEN"))
+	// HOST 可以不用设置，默认使用生产的host
+	credential := common.NewCredential(os.Getenv("TOKEN"))
 	cpf := profile.NewClientProfile()
-	cpf.HttpProfile.Domain = os.Getenv("VIKA_HOST")
-	datasheet, _ := vika.NewDatasheet(credential, os.Getenv("VIKA_DATASHEET_ID"), cpf)
+	cpf.HttpProfile.Domain = os.Getenv("HOST")
+	datasheet, _ := vika.NewDatasheet(credential, os.Getenv("DATASHEET_ID"), cpf)
 	describeRequest := vika.NewDescribeFieldsRequest()
-	describeRequest.ViewId = common.StringPtr(os.Getenv("VIKA_DATASHEET_VIEW_ID"))
+	describeRequest.ViewId = common.StringPtr(os.Getenv("VIEW_ID"))
 	fields, err := datasheet.DescribeFields(describeRequest)
 	if _, ok := err.(*vkerror.VikaSDKError); ok {
 		t.Errorf("An API error has returned: %s", err)
@@ -184,11 +185,11 @@ func TestDescribeFields(t *testing.T) {
 }
 
 func TestDescribeViews(t *testing.T) {
-	// VIKA_HOST 可以不用设置，默认使用生产的host
-	credential := common.NewCredential(os.Getenv("VIKA_TOKEN"))
+	// HOST 可以不用设置，默认使用生产的host
+	credential := common.NewCredential(os.Getenv("TOKEN"))
 	cpf := profile.NewClientProfile()
-	cpf.HttpProfile.Domain = os.Getenv("VIKA_HOST")
-	datasheet, _ := vika.NewDatasheet(credential, os.Getenv("VIKA_DATASHEET_ID"), cpf)
+	cpf.HttpProfile.Domain = os.Getenv("HOST")
+	datasheet, _ := vika.NewDatasheet(credential, os.Getenv("DATASHEET_ID"), cpf)
 	describeRequest := vika.NewDescribeViewsRequest()
 	views, err := datasheet.DescribeViews(describeRequest)
 	if _, ok := err.(*vkerror.VikaSDKError); ok {
@@ -204,10 +205,10 @@ func TestDescribeViews(t *testing.T) {
 }
 
 func TestDescribeSpaces(t *testing.T) {
-	// VIKA_HOST 可以不用设置，默认使用生产的host
-	credential := common.NewCredential(os.Getenv("VIKA_TOKEN"))
+	// HOST 可以不用设置，默认使用生产的host
+	credential := common.NewCredential(os.Getenv("TOKEN"))
 	cpf := profile.NewClientProfile()
-	cpf.HttpProfile.Domain = os.Getenv("VIKA_HOST")
+	cpf.HttpProfile.Domain = os.Getenv("HOST")
 	spaceClient, _ := space.NewSpace(credential, "", cpf)
 	describeRequest := space.NewDescribeSpacesRequest()
 	spaces, err := spaceClient.DescribeSpaces(describeRequest)
@@ -224,11 +225,11 @@ func TestDescribeSpaces(t *testing.T) {
 }
 
 func TestDescribeNodes(t *testing.T) {
-	// VIKA_HOST 可以不用设置，默认使用生产的host
-	credential := common.NewCredential(os.Getenv("VIKA_TOKEN"))
+	// HOST 可以不用设置，默认使用生产的host
+	credential := common.NewCredential(os.Getenv("TOKEN"))
 	cpf := profile.NewClientProfile()
-	cpf.HttpProfile.Domain = os.Getenv("VIKA_HOST")
-	spaceClient, _ := space.NewSpace(credential, os.Getenv("VIKA_SPACE_ID"), cpf)
+	cpf.HttpProfile.Domain = os.Getenv("HOST")
+	spaceClient, _ := space.NewSpace(credential, os.Getenv("SPACE_ID"), cpf)
 	describeRequest := space.NewDescribeNodesRequest()
 	nodes, err := spaceClient.DescribeNodes(describeRequest)
 	if _, ok := err.(*vkerror.VikaSDKError); ok {
@@ -244,13 +245,13 @@ func TestDescribeNodes(t *testing.T) {
 }
 
 func TestDescribeNode(t *testing.T) {
-	// VIKA_HOST 可以不用设置，默认使用生产的host
-	credential := common.NewCredential(os.Getenv("VIKA_TOKEN"))
+	// HOST 可以不用设置，默认使用生产的host
+	credential := common.NewCredential(os.Getenv("TOKEN"))
 	cpf := profile.NewClientProfile()
-	cpf.HttpProfile.Domain = os.Getenv("VIKA_HOST")
-	spaceClient, _ := space.NewSpace(credential, os.Getenv("VIKA_SPACE_ID"), cpf)
+	cpf.HttpProfile.Domain = os.Getenv("HOST")
+	spaceClient, _ := space.NewSpace(credential, os.Getenv("SPACE_ID"), cpf)
 	describeRequest := space.NewDescribeNodeRequest()
-	describeRequest.NodeId = common.StringPtr(os.Getenv("VIKA_DATASHEET_ID"))
+	describeRequest.NodeId = common.StringPtr(os.Getenv("DATASHEET_ID"))
 	node, err := spaceClient.DescribeNode(describeRequest)
 	if _, ok := err.(*vkerror.VikaSDKError); ok {
 		t.Errorf("An API error has returned: %s", err)
