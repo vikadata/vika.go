@@ -6,7 +6,7 @@ jobs:
 
   unit_test:
     runs-on: ubuntu-latest
-    environment: vika
+    environment: api
     steps:
     - uses: actions/checkout@v2
 
