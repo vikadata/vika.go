@@ -4,12 +4,10 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"github.com/h2non/filetype"
 	vkerror "github.com/vikadata/vika.go/lib/common/error"
 	vkhttp "github.com/vikadata/vika.go/lib/common/http"
 	"github.com/vikadata/vika.go/lib/common/profile"
 	"io"
-	"io/ioutil"
 	"log"
 	"mime/multipart"
 	"net/http"
@@ -59,15 +57,20 @@ func FileBuffer(filePath string) ([]byte, string, error) {
 	bodyBuffer := &bytes.Buffer{}
 	//创建一个multipart文件写入器，方便按照http规定格式写入内容
 	bodyWriter := multipart.NewWriter(bodyBuffer)
-	fileWriter, err := createFormFile(bodyWriter, "file", filePath)
-	if err != nil {
-		msg := fmt.Sprintf("Fail to get response because %s", err)
-		return nil, "", vkerror.NewVikaSDKError(500, msg, "ClientError.MultipartError")
-	}
 	file, err := os.Open(filePath)
 	if err != nil {
 		msg := fmt.Sprintf("Fail to get response because %s", err)
 		return nil, "", vkerror.NewVikaSDKError(500, msg, "ClientError.FileReadError")
+	}
+	mimeType, err := GetFileContentType(file)
+	if err != nil {
+		msg := fmt.Sprintf("Fail to get response because %s", err)
+		return nil, "", vkerror.NewVikaSDKError(500, msg, "ClientError.FileReadError")
+	}
+	fileWriter, err := createFormFile(bodyWriter, "file", filePath, mimeType)
+	if err != nil {
+		msg := fmt.Sprintf("Fail to get response because %s", err)
+		return nil, "", vkerror.NewVikaSDKError(500, msg, "ClientError.MultipartError")
 	}
 	//不要忘记关闭打开的文件
 	defer file.Close()
@@ -167,13 +170,24 @@ func (c *Client) sendWithToken(request vkhttp.Request, response vkhttp.Response)
 }
 
 // 重写文件类型
-func createFormFile(bodyWriter *multipart.Writer, fieldname, filePath string) (io.Writer, error) {
-	buf, _ := ioutil.ReadFile(filePath)
-	kind, _ := filetype.Match(buf)
+func createFormFile(bodyWriter *multipart.Writer, fieldname, filePath string, contentType string) (io.Writer, error) {
 	h := make(textproto.MIMEHeader)
 	h.Set("Content-Disposition",
 		fmt.Sprintf(`form-data; name="%s"; filename="%s"`,
 			fieldname, path.Base(filePath)))
-	h.Set("Content-Type", kind.MIME.Value)
+	h.Set("Content-Type", contentType)
 	return bodyWriter.CreatePart(h)
+}
+
+func GetFileContentType(out *os.File) (string, error) {
+	// Only the first 512 bytes are used to sniff the content type.
+	buffer := make([]byte, 512)
+	_, err := out.Read(buffer)
+	if err != nil {
+		return "", err
+	}
+	// Use the net/http package's handy DectectContentType function. Always returns a valid
+	// content-type by returning "application/octet-stream" if no others seemed to match.
+	contentType := http.DetectContentType(buffer)
+	return contentType, nil
 }
