@@ -145,7 +145,10 @@ func (c *Datasheet) DescribeRecord(request *DescribeRecordRequest) (record *Reco
 	if err != nil {
 		return nil, err
 	}
-	return response.Data.Records[0], nil
+	if len(response.Data.Records) > 0 {
+		return response.Data.Records[0], nil
+	}
+	return nil, nil
 }
 
 // CreateRecords 用于创建多条记录
