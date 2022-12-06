@@ -2,7 +2,7 @@ package space
 
 import (
 	"fmt"
-	vkhttp "github.com/vikadata/vika.go/lib/common/http"
+	athttp "github.com/apitable/apitable-sdks/apitable.go/lib/common/http"
 )
 
 const spaceListPath = "/fusion/v1/spaces"
@@ -12,42 +12,42 @@ const nodeDetailPath = "/fusion/v1/spaces/%s/nodes/%s"
 // NewDescribeSpacesRequest init get spaces request instance
 func NewDescribeSpacesRequest() (request *DescribeSpacesRequest) {
 	request = &DescribeSpacesRequest{
-		BaseRequest: &vkhttp.BaseRequest{},
+		BaseRequest: &athttp.BaseRequest{},
 	}
 	return
 }
 
 func NewDescribeNodesRequest() (request *DescribeNodesRequest) {
 	request = &DescribeNodesRequest{
-		BaseRequest: &vkhttp.BaseRequest{},
+		BaseRequest: &athttp.BaseRequest{},
 	}
 	return
 }
 
 func NewDescribeNodeRequest() (request *DescribeNodeRequest) {
 	request = &DescribeNodeRequest{
-		BaseRequest: &vkhttp.BaseRequest{},
+		BaseRequest: &athttp.BaseRequest{},
 	}
 	return
 }
 
 func newDescribeSpacesResponse() (response *DescribeSpacesResponse) {
 	response = &DescribeSpacesResponse{
-		BaseResponse: &vkhttp.BaseResponse{},
+		BaseResponse: &athttp.BaseResponse{},
 	}
 	return
 }
 
 func newDescribeNodesResponse() (response *DescribeNodesResponse) {
 	response = &DescribeNodesResponse{
-		BaseResponse: &vkhttp.BaseResponse{},
+		BaseResponse: &athttp.BaseResponse{},
 	}
 	return
 }
 
 func newDescribeNodeResponse() (response *DescribeNodeResponse) {
 	response = &DescribeNodeResponse{
-		BaseResponse: &vkhttp.BaseResponse{},
+		BaseResponse: &athttp.BaseResponse{},
 	}
 	return
 }
@@ -58,7 +58,7 @@ func (c *Space) DescribeSpaces(request *DescribeSpacesRequest) (spaces []*SpaceB
 		request = NewDescribeSpacesRequest()
 	}
 	request.Init().SetPath(spaceListPath)
-	request.SetHttpMethod(vkhttp.GET)
+	request.SetHttpMethod(athttp.GET)
 	response := newDescribeSpacesResponse()
 	err = c.Send(request, response)
 	if err != nil {
@@ -73,7 +73,7 @@ func (c *Space) DescribeNodes(request *DescribeNodesRequest) (node []*NodeBaseIn
 		request = NewDescribeNodesRequest()
 	}
 	request.Init().SetPath(fmt.Sprintf(nodeListPath, c.SpaceId))
-	request.SetHttpMethod(vkhttp.GET)
+	request.SetHttpMethod(athttp.GET)
 	response := newDescribeNodesResponse()
 	err = c.Send(request, response)
 	if err != nil {
@@ -88,7 +88,7 @@ func (c *Space) DescribeNode(request *DescribeNodeRequest) (node *NodeDetail, er
 		request = NewDescribeNodeRequest()
 	}
 	request.Init().SetPath(fmt.Sprintf(nodeDetailPath, c.SpaceId, *request.NodeId))
-	request.SetHttpMethod(vkhttp.GET)
+	request.SetHttpMethod(athttp.GET)
 	response := newDescribeNodeResponse()
 	err = c.Send(request, response)
 	if err != nil {

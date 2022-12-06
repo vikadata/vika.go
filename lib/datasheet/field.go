@@ -3,15 +3,15 @@ package datasheet
 import (
 	"encoding/json"
 	"fmt"
-	vkhttp "github.com/vikadata/vika.go/lib/common/http"
+	athttp "github.com/apitable/apitable-sdks/apitable.go/lib/common/http"
 )
 
 const fieldPath = "/fusion/v1/datasheets/%s/fields"
 
-// FieldType the vika datasheet field type
+// FieldType the apitable datasheet field type
 type FieldType string
 
-// all vika datasheet field types
+// all apitable datasheet field types
 const (
 	FieldType_SingleText       FieldType = "SingleText"
 	FieldType_Text             FieldType = "Text"
@@ -56,15 +56,15 @@ type IDatasheetField interface {
 
 // DatasheetField describe the fields of table
 type DatasheetField struct {
-	// 字段 ID
+	// field id
 	Id *string `json:"id,omitempty" name:"id"`
-	// 字段名称
+	// field name
 	Name *string `json:"name,omitempty" name:"name"`
-	// 字段类型
+	// field type
 	Type *FieldType `json:"type,omitempty" name:"type"`
-	// 字段权限，即列权限，true 为可编辑，false 为只读
+	// field permissions, that is, column permissions. true is editable and false is read-only.
 	Editable *bool `json:"editable,omitempty" name:"editable"`
-	// 字段属性。不同的字段有不同的属性
+	// field properties. different fields have different attributes.
 	Property *json.RawMessage `json:"property,omitempty" name:"property"`
 }
 
@@ -213,14 +213,14 @@ func (field *DatasheetField) NumberFieldProperty() *NumberFieldProperty {
 
 func NewDescribeFieldsRequest() (request *DescribeFieldsRequest) {
 	request = &DescribeFieldsRequest{
-		BaseRequest: &vkhttp.BaseRequest{},
+		BaseRequest: &athttp.BaseRequest{},
 	}
 	return
 }
 
 func newDescribeFieldsResponse() (response *DescribeFieldsResponse) {
 	response = &DescribeFieldsResponse{
-		BaseResponse: &vkhttp.BaseResponse{},
+		BaseResponse: &athttp.BaseResponse{},
 	}
 	return
 }
@@ -230,7 +230,7 @@ func (c *Datasheet) DescribeFields(request *DescribeFieldsRequest) (fields []*Da
 		request = NewDescribeFieldsRequest()
 	}
 	request.Init().SetPath(fmt.Sprintf(fieldPath, c.DatasheetId))
-	request.SetHttpMethod(vkhttp.GET)
+	request.SetHttpMethod(athttp.GET)
 	response := newDescribeFieldsResponse()
 	err = c.Send(request, response)
 	if err != nil {

@@ -4,9 +4,9 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	vkerror "github.com/vikadata/vika.go/lib/common/error"
-	vkhttp "github.com/vikadata/vika.go/lib/common/http"
-	"github.com/vikadata/vika.go/lib/common/profile"
+	aterror "github.com/apitable/apitable-sdks/apitable.go/lib/common/error"
+	athttp "github.com/apitable/apitable-sdks/apitable.go/lib/common/http"
+	"github.com/apitable/apitable-sdks/apitable.go/lib/common/profile"
 	"io"
 	"log"
 	"mime/multipart"
@@ -53,38 +53,38 @@ func (c *Client) WithDebug(flag bool) *Client {
 }
 
 func FileBuffer(filePath string) ([]byte, string, error) {
-	//新建一个缓冲，用于存放文件内容
+	// create a new buffer, to storage file content.
 	bodyBuffer := &bytes.Buffer{}
-	//创建一个multipart文件写入器，方便按照http规定格式写入内容
+	// create a multipart file writer, to conveniently write content according to http format.
 	bodyWriter := multipart.NewWriter(bodyBuffer)
 	file, err := os.Open(filePath)
 	if err != nil {
 		msg := fmt.Sprintf("Fail to get response because %s", err)
-		return nil, "", vkerror.NewVikaSDKError(500, msg, "ClientError.FileReadError")
+		return nil, "", aterror.NewSDKError(500, msg, "ClientError.FileReadError")
 	}
 	mimeType, err := GetFileContentType(file)
 	if err != nil {
 		msg := fmt.Sprintf("Fail to get response because %s", err)
-		return nil, "", vkerror.NewVikaSDKError(500, msg, "ClientError.FileReadError")
+		return nil, "", aterror.NewSDKError(500, msg, "ClientError.FileReadError")
 	}
 	fileWriter, err := createFormFile(bodyWriter, "file", filePath, mimeType)
 	if err != nil {
 		msg := fmt.Sprintf("Fail to get response because %s", err)
-		return nil, "", vkerror.NewVikaSDKError(500, msg, "ClientError.MultipartError")
+		return nil, "", aterror.NewSDKError(500, msg, "ClientError.MultipartError")
 	}
-	//不要忘记关闭打开的文件
+	// don't forget closing opening file.
 	defer file.Close()
 	_, err = io.Copy(fileWriter, file)
 	if err != nil {
 		return nil, "", nil
 	}
-	//关闭bodyWriter停止写入数据
+	// close bodyWriter to stop writing content.
 	_ = bodyWriter.Close()
 	contentType := bodyWriter.FormDataContentType()
 	return bodyBuffer.Bytes(), contentType, nil
 }
 
-func (c *Client) Send(request vkhttp.Request, response vkhttp.Response) (err error) {
+func (c *Client) Send(request athttp.Request, response athttp.Response) (err error) {
 	if request.GetScheme() == "" {
 		request.SetScheme(c.httpProfile.Scheme)
 	}
@@ -92,7 +92,7 @@ func (c *Client) Send(request vkhttp.Request, response vkhttp.Response) (err err
 	if request.GetDomain() == "" {
 		domain := c.httpProfile.Domain
 		if domain == "" {
-			domain = vkhttp.Domain
+			domain = athttp.Domain
 		}
 		request.SetDomain(domain)
 	}
@@ -103,7 +103,7 @@ func (c *Client) Send(request vkhttp.Request, response vkhttp.Response) (err err
 	return c.sendWithToken(request, response)
 }
 
-func (c *Client) sendWithToken(request vkhttp.Request, response vkhttp.Response) (err error) {
+func (c *Client) sendWithToken(request athttp.Request, response athttp.Response) (err error) {
 	headers := map[string]string{
 		"User-Agent": "lib-go",
 	}
@@ -117,8 +117,8 @@ func (c *Client) sendWithToken(request vkhttp.Request, response vkhttp.Response)
 	// build canonical request string
 	httpRequestMethod := request.GetHttpMethod()
 	canonicalQueryString := ""
-	if httpRequestMethod == vkhttp.GET || httpRequestMethod == vkhttp.DELETE {
-		err = vkhttp.ConstructParams(request)
+	if httpRequestMethod == athttp.GET || httpRequestMethod == athttp.DELETE {
+		err = athttp.ConstructParams(request)
 		if err != nil {
 			return err
 		}
@@ -126,10 +126,10 @@ func (c *Client) sendWithToken(request vkhttp.Request, response vkhttp.Response)
 		for key, value := range request.GetParams() {
 			params[key] = value
 		}
-		canonicalQueryString = vkhttp.GetUrlQueriesEncoded(params)
+		canonicalQueryString = athttp.GetUrlQueriesEncoded(params)
 	}
 	requestPayload := ""
-	if httpRequestMethod == vkhttp.POST || httpRequestMethod == vkhttp.PATCH {
+	if httpRequestMethod == athttp.POST || httpRequestMethod == athttp.PATCH {
 		if c.profile.Upload {
 			requestPayload = string(request.GetFile())
 		} else {
@@ -163,13 +163,13 @@ func (c *Client) sendWithToken(request vkhttp.Request, response vkhttp.Response)
 	httpResponse, err := c.httpClient.Do(httpRequest)
 	if err != nil {
 		msg := fmt.Sprintf("Fail to get response because %s", err)
-		return vkerror.NewVikaSDKError(500, msg, "ClientError.NetworkError")
+		return aterror.NewSDKError(500, msg, "ClientError.NetworkError")
 	}
-	err = vkhttp.ParseFromHttpResponse(httpResponse, response)
+	err = athttp.ParseFromHttpResponse(httpResponse, response)
 	return err
 }
 
-// 重写文件类型
+// rewrite file type
 func createFormFile(bodyWriter *multipart.Writer, fieldname, filePath string, contentType string) (io.Writer, error) {
 	h := make(textproto.MIMEHeader)
 	h.Set("Content-Disposition",

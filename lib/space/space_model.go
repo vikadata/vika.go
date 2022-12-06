@@ -1,9 +1,9 @@
 package space
 
 import (
-	"github.com/vikadata/vika.go/lib/common"
-	vkhttp "github.com/vikadata/vika.go/lib/common/http"
-	"github.com/vikadata/vika.go/lib/common/profile"
+	"github.com/apitable/apitable-sdks/apitable.go/lib/common"
+	athttp "github.com/apitable/apitable-sdks/apitable.go/lib/common/http"
+	"github.com/apitable/apitable-sdks/apitable.go/lib/common/profile"
 )
 
 type Space struct {
@@ -52,17 +52,17 @@ type NodeDetail struct {
 
 // DescribeSpacesRequest space list request
 type DescribeSpacesRequest struct {
-	*vkhttp.BaseRequest
+	*athttp.BaseRequest
 }
 
 // DescribeNodesRequest node list request
 type DescribeNodesRequest struct {
-	*vkhttp.BaseRequest
+	*athttp.BaseRequest
 }
 
 // DescribeNodeRequest node list request
 type DescribeNodeRequest struct {
-	*vkhttp.BaseRequest
+	*athttp.BaseRequest
 	NodeId *string
 }
 
@@ -78,22 +78,22 @@ type NodeResponse struct {
 
 // DescribeSpacesResponse space list response data
 type DescribeSpacesResponse struct {
-	*vkhttp.BaseResponse
-	// api返回数据
+	*athttp.BaseResponse
+	// api response data
 	Data *SpaceResponse `json:"data"`
 }
 
 // DescribeNodesResponse node list response data
 type DescribeNodesResponse struct {
-	*vkhttp.BaseResponse
-	// api返回数据
+	*athttp.BaseResponse
+	// api response data
 	Data *NodeResponse `json:"data"`
 }
 
 // DescribeNodeResponse node detail response
 type DescribeNodeResponse struct {
-	*vkhttp.BaseResponse
-	// api返回数据
+	*athttp.BaseResponse
+	// api response data
 	Data *NodeDetail `json:"data"`
 }
 

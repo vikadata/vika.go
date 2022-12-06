@@ -1,4 +1,4 @@
-module github.com/vikadata/vika.go
+module github.com/apitable/apitable-sdks/apitable.go
 
 go 1.15
 

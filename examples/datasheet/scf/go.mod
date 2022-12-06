@@ -2,7 +2,7 @@ module example/datasheet/scf
 
 go 1.17
 
-require github.com/vikadata/vika.go v0.0.3
+require github.com/apitable/apitable-sdks/apitable.go v0.0.5
 
 require (
 	github.com/h2non/filetype v1.1.0 // indirect

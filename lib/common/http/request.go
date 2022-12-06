@@ -17,7 +17,7 @@ const (
 	HTTP  = "http"
 	HTTPS = "https"
 
-	Domain = "api.vika.cn"
+	Domain = "api.apitable.com"
 	Path   = "/"
 )
 

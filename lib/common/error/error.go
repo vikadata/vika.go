@@ -3,32 +3,32 @@ package error
 
 import "fmt"
 
-type VikaSDKError struct {
+type SDKError struct {
 	Code      int
 	Message   string
 	RequestId string
 }
 
-func (e *VikaSDKError) Error() string {
+func (e *SDKError) Error() string {
 	return fmt.Sprintf("[SDKError] Code=%d, Message=%s, RequestId=%s", e.Code, e.Message, e.RequestId)
 }
 
-func NewVikaSDKError(code int, message, requestId string) error {
-	return &VikaSDKError{
+func NewSDKError(code int, message, requestId string) error {
+	return &SDKError{
 		Code:      code,
 		Message:   message,
 		RequestId: requestId,
 	}
 }
 
-func (e *VikaSDKError) GetCode() int {
+func (e *SDKError) GetCode() int {
 	return e.Code
 }
 
-func (e *VikaSDKError) GetMessage() string {
+func (e *SDKError) GetMessage() string {
 	return e.Message
 }
 
-func (e *VikaSDKError) GetRequestId() string {
+func (e *SDKError) GetRequestId() string {
 	return e.RequestId
 }

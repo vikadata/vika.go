@@ -3,42 +3,44 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/vikadata/vika.go/lib/common"
-	vkerror "github.com/vikadata/vika.go/lib/common/error"
-	"github.com/vikadata/vika.go/lib/common/profile"
-	vika "github.com/vikadata/vika.go/lib/datasheet"
+	"github.com/apitable/apitable-sdks/apitable.go/lib/common"
+	aterror "github.com/apitable/apitable-sdks/apitable.go/lib/common/error"
+	"github.com/apitable/apitable-sdks/apitable.go/lib/common/profile"
+	apitable "github.com/apitable/apitable-sdks/apitable.go/lib/datasheet"
 	"os"
 )
 
 func main() {
-	// 必要步骤：
-	// 实例化一个认证对象，入参需要传入vika开发者token。
-	// 这里采用的是从环境变量读取的方式，需要在环境变量中先设置这个值。
-	// 你也可以直接在代码中写死token，但是小心不要将代码复制、上传或者分享给他人，
-	// 以免泄露token危及你的财产安全。
+	// necessary steps:
+	// Instantiating an authentication object, the input parameter requires the apitable developer token.
+	// Here is the way to read from environment variables.
+	// This value needs to be set first in the environment variable.
+	// You can also write dead token directly in the code.
+	// But be careful not to copy, upload or share the code with others,
+	// so as not to disclose the token and endanger the safety of your property.
 	credential := common.NewCredential(
-		os.Getenv("VIKA_TOKEN"),
+		os.Getenv("APITABLE_TOKEN"),
 	)
 	cpf := profile.NewClientProfile()
-	// 上传图片
+	// upload pictures
 	attachment1, err := uploadImage(credential, cpf)
-	if _, ok := err.(*vkerror.VikaSDKError); ok {
+	if _, ok := err.(*aterror.SDKError); ok {
 		fmt.Printf("uploadImage:An API error has returned: %s", err)
 		return
 	}
-	// 非SDK异常，直接失败。实际代码中可以加入其他的处理。
+	// Non-SDK exception, direct failure. Other processing can be added to the actual code.
 	if err != nil {
 		panic(err)
 	}
 	json1, _ := json.Marshal(attachment1)
-	fmt.Printf("上传图片结果：%s\n", json1)
+	fmt.Printf("Upload picture results：%s\n", json1)
 }
 
-func uploadImage(credential *common.Credential, cpf *profile.ClientProfile) (*vika.Attachment, error) {
+func uploadImage(credential *common.Credential, cpf *profile.ClientProfile) (*apitable.Attachment, error) {
 	cpf.Upload = true
-	datasheet, _ := vika.NewDatasheet(credential, os.Getenv("VIKA_DATASHEET_ID"), cpf)
-	request := vika.NewUploadRequest()
-	// 如果不设置Domain使用默认的域名
-	request.FilePath = "图片完整路径"
+	datasheet, _ := apitable.NewDatasheet(credential, os.Getenv("APITABLE_DATASHEET_ID"), cpf)
+	request := apitable.NewUploadRequest()
+	// If you do not set domain, use the default domain name.
+	request.FilePath = "picture full path"
 	return datasheet.UploadFile(request)
 }

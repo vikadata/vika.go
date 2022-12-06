@@ -2,7 +2,7 @@ package datasheet
 
 import (
 	"encoding/json"
-	vkhttp "github.com/vikadata/vika.go/lib/common/http"
+	athttp "github.com/apitable/apitable-sdks/apitable.go/lib/common/http"
 )
 
 func (r *DescribeRecordRequest) ToJsonString() string {
@@ -181,13 +181,13 @@ type CurrencyFieldFormat struct {
 	Symbol    *int `json:"symbol,omitempty" name:"symbol"`
 }
 
-// MemberType the vika datasheet member field type
+// MemberType the apitable datasheet member field type
 type MemberType string
 
-// ValueType the vika datasheet basic value type
+// ValueType the apitable datasheet basic value type
 type ValueType string
 
-// RollupFunction the vika datasheet supported customize function
+// RollupFunction the apitable datasheet supported customize function
 type RollupFunction string
 
 // all datasheet member field types
@@ -224,48 +224,52 @@ const (
 	RollupFunction_ARRAYCOMPACT RollupFunction = "ARRAYCOMPACT"
 )
 
-// Sort 需要排序的字段
+// Sort the need sorted fields
 type Sort struct {
 
-	// 需要排序的字段名称
+	// the need sorted fields' name
 	Field *string `json:"Field,omitempty" name:"field"`
 
-	// 排序顺序 desc/asc
+	// sort order desc/asc
 	Order *string `json:"Order,omitempty" name:"order"`
 }
 
 type DescribeRecordRequest struct {
-	*vkhttp.BaseRequest
+	*athttp.BaseRequest
 
-	// 按照一个或者多个recordId查询。recordId形如：`rec*****`。（此参数的具体格式可参考API[开发者文档](https://vika.cn/help/api-get-records/)的`输入参数说明`一节）。每次请求的实例的上限为100。参数不支持同时指定`RecordIds`和`Filters`。
+	// query by one or more record id. record id such as：`rec*****`.
+	//（For the specific format of this parameter, please refer to the api [developer documentation](https://help.apitable.com/api-get-records/)）。
+	// The maximum number of instances per request is 100.
+	// The parameter does not support specifying both 'Record Ids' and 'Filters'.
 	RecordIds []*string `json:"recordIds,omitempty" name:"recordIds" list`
 
-	// viewId 按照【视图】进行过滤。形如：viw*****。类型：String 必选：否
+	// filter by view. value such as: viw*****. required: no.
 	ViewId *string `json:"viewId,omitempty" name:"viewId"`
 
-	// fields 按照【字段】进行过滤，可通过登录[空间站](https://vika.cn)进入数表进行查看。形如：******。类型：String 必选：否
+	// filter by field. value such as: fld*****. required: no.
 	Fields []*string `json:"fields,omitempty" name:"fields"`
 
-	// filterByFormula 按照【公式】进行过滤, 公式使用方式详见[一分钟上手公式](https://vika.cn/help/tutorial-getting-started-with-formulas/)。形如：max({field})。类型：String 必选：否
+	// filter by formula. value such as: max({field}). required: no.
+	// [one minute hands on formula](https://help.apitable.com/tutorial-getting-started-with-formulas/).
 	FilterByFormula *string `json:"filterByFormula,omitempty" name:"filterByFormula"`
 
-	// cellFormat 按照【单元格值类型】进行过滤,默认为 json，指定为 string 时所有值都将被自动转换为 string 格式。形如: json。类型：String 必选：否
+	// filter by [cell value type], the default is json. When specified as string, all values will be automatically converted to string format. such as: json. required: no.
 	CellFormat *string `json:"cellFormat,omitempty" name:"cellFormat"`
 
-	// fieldKey 按照【列形式】进行过滤,默认使用列名 ‘name’ 。形如：name。类型：String 必选：否
+	// filter by column identification. By default, the column name is used.value such as: name. required: no.
 	FieldKey *string `json:"fieldKey,omitempty" name:"fieldKey"`
 
-	// 参数不支持同时指定`RecordIds`和`Filters`。
-	// sort 按照【排序】进行过滤。 形如：{field: ‘fieldname’, order: ‘asc/desc’}。类型：String 必选：否
+	// The parameter does not support specifying both 'Record Ids' and 'Filters'.
+	// filter by sort. such as：{field: ‘field_name’, order: ‘asc/desc’}. required: no.
 	Sort []*Sort `json:"sort,omitempty" name:"sort" list`
 
-	// 指定分页的页码，默认为 1。与参数pageSize配合使用。 进一步介绍请参考 API[开发者文档](https://vika.cn/help/api-get-records/)中的相关小节。
+	// Specifies the page number of the page. The default is 1. It is used in conjunction with the parameter page size. [more see](https://help.apitable.com/api-get-records/)
 	PageNum *int64 `json:"pageNum,omitempty" name:"pageNum"`
 
-	// 返回数量，默认为100，最大值为1000。关于`PageSize`的更进一步介绍请参考 API[开发者文档](https://vika.cn/help/api-get-records/)中的相关小节。
+	// The number page returned. The default value is 100. The maximum value is 1000. [more see](https://help.apitable.com/api-get-records/).
 	PageSize *int64 `json:"pageSize,omitempty" name:"pageSize"`
 
-	// 限制返回记录的总数量, 进一步介绍请参考 API[开发者文档](https://vika.cn/help/api-get-records/)中的相关小节。
+	// The number record returned. [more see](https://help.apitable.com/api-get-records/)
 	MaxRecords *int64 `json:"maxRecords,omitempty" name:"maxRecords"`
 }
 
@@ -274,54 +278,54 @@ type Fields struct {
 }
 
 type BaseRecord struct {
-	// 记录的ID 形如：`rec*****`
+	// such: `rec*****`
 	RecordId *string `json:"recordId,omitempty" name:"recordId"`
-	// 记录的列对应的key/value
+	// key/value corresponding to column
 	Fields *Field `json:"fields,omitempty" name:"fields" map`
 }
 
 type Record struct {
 	*BaseRecord
-	// 记录创建时间 形如：时间戳
+	// record creation time. such as: timestamp
 	CreatedAt *int64 `json:"createdAt,omitempty" name:"createdAt"`
 }
 
 type CreateRecordsRequest struct {
-	*vkhttp.BaseRequest
-	// 记录的列对应的key/value
+	*athttp.BaseRequest
+	// key/value corresponding to column
 	Records []*Fields `json:"records,omitempty" name:"records" map`
 }
 
 type ModifyRecordsRequest struct {
-	*vkhttp.BaseRequest
-	// 记录的列对应的key/value
+	*athttp.BaseRequest
+	// key/value corresponding to column
 	Records []*BaseRecord `json:"records,omitempty" name:"records" map`
 }
 
 type DeleteRecordsRequest struct {
-	*vkhttp.BaseRequest
-	// 记录的列对应的key/value
+	*athttp.BaseRequest
+	// key/value corresponding to column
 	RecordIds []*string `json:"recordIds,omitempty" name:"recordIds" list`
 }
 
 type UploadRequest struct {
-	*vkhttp.BaseRequest
-	// 文件路径
+	*athttp.BaseRequest
+	// file path
 	FilePath string `json:"filePath,omitempty" name:"filePath" string`
 }
 
 type DescribeFieldsRequest struct {
-	*vkhttp.BaseRequest
-	// viewId 按照【视图】进行过滤。形如：viw*****。类型：String 必选：否
+	*athttp.BaseRequest
+	// filter by view. value such as: viw*****. required: no.
 	ViewId *string `json:"viewId,omitempty" name:"viewId"`
 }
 
 type DescribeViewsRequest struct {
-	*vkhttp.BaseRequest
+	*athttp.BaseRequest
 }
 
 type RecordPagination struct {
-	// 当前页数
+	// current number of pages
 	PageNum *int64 `json:"pageNum,omitempty" name:"pageNum"`
 
 	PageSize *int64 `json:"pageSize,omitempty" name:"pageSize"`
@@ -332,33 +336,33 @@ type RecordPagination struct {
 }
 
 type Attachment struct {
-	// 附件唯一标识
+	// attachment unique identification
 	Token *string `json:"token,omitempty" name:"token"`
-	//附件原始名称
+	// attachment original name
 	Name *string `json:"name,omitempty" name:"name"`
-	//附件大小
+	// attachment size
 	Size *int64 `json:"size,omitempty" name:"size"`
-	// 附件宽 图片才返回
+	// when the attachment is a picture, the width of the picture.
 	Width *int64 `json:"width,omitempty" name:"width"`
-	// 附件高 图片才返回
+	// when the attachment is a picture, the height of the picture.
 	Height *int64 `json:"height,omitempty" name:"height"`
-	// 附件类型 形如：image/jpeg
+	// attachment type, such as：image/jpeg
 	MimeType *string `json:"mimeType,omitempty" name:"mimeType"`
-	// pdf预览图,只有pdf格式才会返回
+	// pdf preview image, only pdf format will be returned
 	Preview *string `json:"preview,omitempty" name:"preview"`
-	// 附件访问路径
+	// attachment access path
 	Url *string `json:"url,omitempty" name:"url"`
 }
 
 type DescribeRecordResponse struct {
-	*vkhttp.BaseResponse
-	// api返回数据
+	*athttp.BaseResponse
+	// api response data
 	Data *RecordPagination `json:"data"`
 }
 
 type UploadResponse struct {
-	*vkhttp.BaseResponse
-	// api返回数据
+	*athttp.BaseResponse
+	// api response data
 	Data *Attachment `json:"data"`
 }
 
@@ -371,13 +375,13 @@ type ViewsResponse struct {
 }
 
 type DescribeFieldsResponse struct {
-	*vkhttp.BaseResponse
-	// api返回数据
+	*athttp.BaseResponse
+	// api response data
 	Data *FieldsResponse `json:"data"`
 }
 
 type DescribeViewsResponse struct {
-	*vkhttp.BaseResponse
-	// api返回数据
+	*athttp.BaseResponse
+	// api response data
 	Data *ViewsResponse `json:"data"`
 }

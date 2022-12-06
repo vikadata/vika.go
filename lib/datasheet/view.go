@@ -2,7 +2,7 @@ package datasheet
 
 import (
 	"fmt"
-	vkhttp "github.com/vikadata/vika.go/lib/common/http"
+	athttp "github.com/apitable/apitable-sdks/apitable.go/lib/common/http"
 )
 
 const viewPath = "/fusion/v1/datasheets/%s/views"
@@ -30,14 +30,14 @@ type DatasheetView struct {
 
 func NewDescribeViewsRequest() (request *DescribeViewsRequest) {
 	request = &DescribeViewsRequest{
-		BaseRequest: &vkhttp.BaseRequest{},
+		BaseRequest: &athttp.BaseRequest{},
 	}
 	return
 }
 
 func newDescribeViewsResponse() (response *DescribeViewsResponse) {
 	response = &DescribeViewsResponse{
-		BaseResponse: &vkhttp.BaseResponse{},
+		BaseResponse: &athttp.BaseResponse{},
 	}
 	return
 }
@@ -47,7 +47,7 @@ func (c *Datasheet) DescribeViews(request *DescribeViewsRequest) (views []*Datas
 		request = NewDescribeViewsRequest()
 	}
 	request.Init().SetPath(fmt.Sprintf(viewPath, c.DatasheetId))
-	request.SetHttpMethod(vkhttp.GET)
+	request.SetHttpMethod(athttp.GET)
 	response := newDescribeViewsResponse()
 	err = c.Send(request, response)
 	if err != nil {
