@@ -1,3 +1,7 @@
+# PLEASE NOTE, THIS PROJECT IS NO LONGER BEING MAINTAINED
+
+---
+
 # Vika
 
 [Vika](https://vika.cn) Golang SDK 是对维格表 API 的封装。
